@@ -235,19 +235,19 @@
             utility: [90699, 194011, 333801, 511649, 556978, 351803, 697815, 689345, 958518, 28939]
         };
 
-        // BASE DE DADOS DINÂMICA DO TOP 5 (Extraída dos seus relatórios)
+        // BASE DE DADOS DINÂMICA DO TOP 5 (Sem as linhas em branco)
         const topCampanhasMensal = {
             "all": {
                 labels: ['Refin CP D3 (Fev/26)', 'Refin CP D1 (Fev/26)', 'Refin CP D7 (Fev/26)', 'Consig Trab D3 (Set/25)', 'Refin CP D5 (Fev/26)'],
                 valores: [1043367, 1009712, 990666, 870289, 738756]
             },
             "0": { // Jul/25
-                labels: ['Refin Recup (Fuga)', 'Campanha Não Identificada', 'MGM', 'Churn Sem Oferta D4', 'Churn Sem Oferta D3'],
-                valores: [219475, 179060, 88727, 55021, 54481]
+                labels: ['Refin Recup (Fuga)', 'MGM', 'Churn Sem Oferta D4', 'Churn Sem Oferta D3', 'PA Refin Recup'],
+                valores: [219475, 88727, 55021, 54481, 42457]
             },
             "1": { // Ago/25
-                labels: ['Desbloqueio Benefício V2', 'Desbloqueio Benefício', 'Refin Recup (Fuga)', 'Campanha Não Identificada', 'Consig Refin PAP'],
-                valores: [645147, 376634, 218087, 195796, 130151]
+                labels: ['Desbloqueio Benefício V2', 'Desbloqueio Benefício', 'Refin Recup (Fuga)', 'Consig Refin PAP', 'Consig Trabalhador D1'],
+                valores: [645147, 376634, 218087, 130151, 124405]
             },
             "2": { // Set/25
                 labels: ['Consig Trabalhador D3', 'Churn Sem Oferta D2', 'Consig Refin PAP', 'FGTS PAP', 'Antecipação 13º D3'],
@@ -258,28 +258,28 @@
                 valores: [716989, 532287, 481710, 310010, 260163]
             },
             "4": { // Nov/25
-                labels: ['Churn Sem Oferta D2', 'Campanha Não Identificada', 'Consig Refin PAP', 'CP Refin PAP', 'Desbloqueio Benefício V31'],
-                valores: [328784, 164103, 98950, 95818, 87798]
+                labels: ['Churn Sem Oferta D2', 'Consig Refin PAP', 'CP Refin PAP', 'Info Desbloqueio V31', 'Desbloqueio Benefício V5'],
+                valores: [328784, 98950, 95818, 87798, 84426]
             },
             "5": { // Dez/25
-                labels: ['Campanha Não Identificada', 'Aumento Margem', 'Onboarding Abertura V11', 'Transacional IN100', 'SAD Reengajamento D3'],
-                valores: [212637, 155110, 79660, 42791, 41212]
+                labels: ['Aumento Margem', 'Onboarding Abertura V11', 'Transacional IN100', 'SAD Reengajamento D3', 'SAD Reengajamento D2'],
+                valores: [155110, 79660, 42791, 41212, 40077]
             },
             "6": { // Jan/26
-                labels: ['Campanha Não Identificada', 'Refin CP D5', 'CP Refin Carrinho', 'Onboarding Abertura V11', 'Transacional IN100'],
-                valores: [458577, 199455, 155712, 124210, 100073]
+                labels: ['Refin CP D5', 'CP Refin Carrinho', 'Onboarding Abertura V11', 'Transacional IN100', 'CP Novo D5'],
+                valores: [199455, 155712, 124210, 100073, 72832]
             },
             "7": { // Fev/26
-                labels: ['Refin CP D3', 'Refin CP D1', 'Refin CP D7', 'Refin CP D5', 'Campanha Não Identificada'],
-                valores: [1043367, 1009712, 990666, 738756, 472088]
+                labels: ['Refin CP D3', 'Refin CP D1', 'Refin CP D7', 'Refin CP D5', 'CP Novo D7'],
+                valores: [1043367, 1009712, 990666, 738756, 217310]
             },
             "8": { // Mar/26
-                labels: ['Campanha Não Identificada', 'Refin CP Carrinho', 'NPS Transacional', 'Transacional IN100', 'CP Novo Carrinho'],
-                valores: [546819, 404930, 153502, 144596, 130393]
+                labels: ['Refin CP Carrinho', 'NPS Transacional', 'Transacional IN100', 'CP Novo Carrinho', 'Onboarding Abertura V11'],
+                valores: [404930, 153502, 144596, 130393, 99064]
             },
             "9": { // Abr/26
-                labels: ['Campanha Não Identificada', 'Refin CP Carrinho', 'NPS Transacional', 'CP Novo Carrinho', 'Transacional IN100'],
-                valores: [465257, 319102, 188810, 125121, 108029]
+                labels: ['Refin CP Carrinho', 'NPS Transacional', 'CP Novo Carrinho', 'Transacional IN100', 'Onboarding Abertura V11'],
+                valores: [319102, 188810, 125121, 108029, 80581]
             }
         };
 
@@ -295,13 +295,13 @@
             if (selector === 'all') {
                 mkt = db.marketing.reduce((a, b) => a + b, 0);
                 util = db.utility.reduce((a, b) => a + b, 0);
-                document.getElementById('timelineSection').style.display = 'block'; // Mostra linha do tempo no global
+                document.getElementById('timelineSection').style.display = 'block'; 
                 document.getElementById('topCampaignsTitle').innerText = '🏆 Top 5 Campanhas (Histórico Global)';
             } else {
                 const idx = parseInt(selector);
                 mkt = db.marketing[idx];
                 util = db.utility[idx];
-                document.getElementById('timelineSection').style.display = 'none'; // Esconde linha do tempo no mês específico
+                document.getElementById('timelineSection').style.display = 'none'; 
                 document.getElementById('topCampaignsTitle').innerText = `🏆 Top 5 Campanhas (${db.labels[idx]})`;
             }
 
@@ -326,7 +326,6 @@
             if(charts.pie) charts.pie.destroy();
             if(charts.bar) charts.bar.destroy();
 
-            // Só cria o gráfico de linha se estiver na Visão Geral
             if (selector === 'all') {
                 const ctxTime = document.getElementById('timelineChart').getContext('2d');
                 charts.timeline = new Chart(ctxTime, {
@@ -364,7 +363,6 @@
                 }
             });
 
-            // GRÁFICO DINÂMICO DE CAMPANHAS
             const currentTopData = topCampanhasMensal[selector];
             const ctxBar = document.getElementById('topCampaignsChart').getContext('2d');
             charts.bar = new Chart(ctxBar, {
