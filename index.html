@@ -26,7 +26,6 @@
         .container { 
             max-width: 1400px; 
             margin: 0 auto; 
-            background-color: #f4f7f6; /* Fallback de segurança */
             background-color: var(--bg-color); 
             padding: 20px; 
             border-radius: 20px; 
@@ -183,7 +182,7 @@
             </div>
         </div>
 
-        <div class="chart-section">
+        <div class="chart-section" id="timelineSection">
             <h2>📈 Evolução de Envios (Mês a Mês)</h2>
             <div class="chart-container">
                 <canvas id="timelineChart"></canvas>
@@ -198,7 +197,7 @@
                 </div>
             </div>
             <div class="chart-section">
-                <h2>🏆 Top 5 Campanhas (Maiores Volumes)</h2>
+                <h2 id="topCampaignsTitle">🏆 Top 5 Campanhas</h2>
                 <div class="chart-container">
                     <canvas id="topCampaignsChart"></canvas>
                 </div>
@@ -236,15 +235,52 @@
             utility: [90699, 194011, 333801, 511649, 556978, 351803, 697815, 689345, 958518, 28939]
         };
 
-        const topCampanhas = {
-            labels: [
-                'Refin CP (Fev/26)', 
-                'Consignado Trab (Set/25)', 
-                'Churn Sem Oferta (Out/25)', 
-                'Desbloqueio Benef (Ago/25)', 
-                'Onboarding Abert. (Jan/26)'
-            ],
-            valores: [1043367, 870289, 716989, 645147, 124210]
+        // BASE DE DADOS DINÂMICA DO TOP 5 (Extraída dos seus relatórios)
+        const topCampanhasMensal = {
+            "all": {
+                labels: ['Refin CP D3 (Fev/26)', 'Refin CP D1 (Fev/26)', 'Refin CP D7 (Fev/26)', 'Consig Trab D3 (Set/25)', 'Refin CP D5 (Fev/26)'],
+                valores: [1043367, 1009712, 990666, 870289, 738756]
+            },
+            "0": { // Jul/25
+                labels: ['Refin Recup (Fuga)', 'Campanha Não Identificada', 'MGM', 'Churn Sem Oferta D4', 'Churn Sem Oferta D3'],
+                valores: [219475, 179060, 88727, 55021, 54481]
+            },
+            "1": { // Ago/25
+                labels: ['Desbloqueio Benefício V2', 'Desbloqueio Benefício', 'Refin Recup (Fuga)', 'Campanha Não Identificada', 'Consig Refin PAP'],
+                valores: [645147, 376634, 218087, 195796, 130151]
+            },
+            "2": { // Set/25
+                labels: ['Consig Trabalhador D3', 'Churn Sem Oferta D2', 'Consig Refin PAP', 'FGTS PAP', 'Antecipação 13º D3'],
+                valores: [870289, 366929, 294967, 276900, 253872]
+            },
+            "3": { // Out/25
+                labels: ['Churn Sem Oferta D2', 'Consig Novo D1', 'Consig Novo D3', 'Cartão Crédito Noname', 'Antecipação 13º D3'],
+                valores: [716989, 532287, 481710, 310010, 260163]
+            },
+            "4": { // Nov/25
+                labels: ['Churn Sem Oferta D2', 'Campanha Não Identificada', 'Consig Refin PAP', 'CP Refin PAP', 'Desbloqueio Benefício V31'],
+                valores: [328784, 164103, 98950, 95818, 87798]
+            },
+            "5": { // Dez/25
+                labels: ['Campanha Não Identificada', 'Aumento Margem', 'Onboarding Abertura V11', 'Transacional IN100', 'SAD Reengajamento D3'],
+                valores: [212637, 155110, 79660, 42791, 41212]
+            },
+            "6": { // Jan/26
+                labels: ['Campanha Não Identificada', 'Refin CP D5', 'CP Refin Carrinho', 'Onboarding Abertura V11', 'Transacional IN100'],
+                valores: [458577, 199455, 155712, 124210, 100073]
+            },
+            "7": { // Fev/26
+                labels: ['Refin CP D3', 'Refin CP D1', 'Refin CP D7', 'Refin CP D5', 'Campanha Não Identificada'],
+                valores: [1043367, 1009712, 990666, 738756, 472088]
+            },
+            "8": { // Mar/26
+                labels: ['Campanha Não Identificada', 'Refin CP Carrinho', 'NPS Transacional', 'Transacional IN100', 'CP Novo Carrinho'],
+                valores: [546819, 404930, 153502, 144596, 130393]
+            },
+            "9": { // Abr/26
+                labels: ['Campanha Não Identificada', 'Refin CP Carrinho', 'NPS Transacional', 'CP Novo Carrinho', 'Transacional IN100'],
+                valores: [465257, 319102, 188810, 125121, 108029]
+            }
         };
 
         let charts = {};
@@ -259,10 +295,14 @@
             if (selector === 'all') {
                 mkt = db.marketing.reduce((a, b) => a + b, 0);
                 util = db.utility.reduce((a, b) => a + b, 0);
+                document.getElementById('timelineSection').style.display = 'block'; // Mostra linha do tempo no global
+                document.getElementById('topCampaignsTitle').innerText = '🏆 Top 5 Campanhas (Histórico Global)';
             } else {
                 const idx = parseInt(selector);
                 mkt = db.marketing[idx];
                 util = db.utility[idx];
+                document.getElementById('timelineSection').style.display = 'none'; // Esconde linha do tempo no mês específico
+                document.getElementById('topCampaignsTitle').innerText = `🏆 Top 5 Campanhas (${db.labels[idx]})`;
             }
 
             const cMkt = mkt * CUSTO_MKT;
@@ -278,26 +318,29 @@
             document.getElementById('totalMsgs').innerText = formatNum(totalMsgs);
             document.getElementById('totalCost').innerText = formatCur(totalCost);
 
-            updateCharts(cMkt, cUtil);
+            updateCharts(cMkt, cUtil, selector);
         }
 
-        function updateCharts(cMkt, cUtil) {
+        function updateCharts(cMkt, cUtil, selector) {
             if(charts.timeline) charts.timeline.destroy();
             if(charts.pie) charts.pie.destroy();
             if(charts.bar) charts.bar.destroy();
 
-            const ctxTime = document.getElementById('timelineChart').getContext('2d');
-            charts.timeline = new Chart(ctxTime, {
-                type: 'line',
-                data: {
-                    labels: db.labels,
-                    datasets: [
-                        { label: 'Marketing', data: db.marketing, borderColor: '#0066FF', backgroundColor: 'rgba(0,102,255,0.1)', fill: true, tension: 0.4 },
-                        { label: 'Utility', data: db.utility, borderColor: '#7FD135', backgroundColor: 'rgba(127,209,53,0.1)', fill: true, tension: 0.4 }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
+            // Só cria o gráfico de linha se estiver na Visão Geral
+            if (selector === 'all') {
+                const ctxTime = document.getElementById('timelineChart').getContext('2d');
+                charts.timeline = new Chart(ctxTime, {
+                    type: 'line',
+                    data: {
+                        labels: db.labels,
+                        datasets: [
+                            { label: 'Marketing', data: db.marketing, borderColor: '#0066FF', backgroundColor: 'rgba(0,102,255,0.1)', fill: true, tension: 0.4 },
+                            { label: 'Utility', data: db.utility, borderColor: '#7FD135', backgroundColor: 'rgba(127,209,53,0.1)', fill: true, tension: 0.4 }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
 
             const ctxPie = document.getElementById('costPieChart').getContext('2d');
             charts.pie = new Chart(ctxPie, {
@@ -321,14 +364,29 @@
                 }
             });
 
+            // GRÁFICO DINÂMICO DE CAMPANHAS
+            const currentTopData = topCampanhasMensal[selector];
             const ctxBar = document.getElementById('topCampaignsChart').getContext('2d');
             charts.bar = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
-                    labels: topCampanhas.labels,
-                    datasets: [{ label: 'Volume de Envios', data: topCampanhas.valores, backgroundColor: '#0066FF' }]
+                    labels: currentTopData.labels,
+                    datasets: [{ label: 'Volume de Envios', data: currentTopData.valores, backgroundColor: '#0066FF' }]
                 },
-                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false }
+                options: { 
+                    indexAxis: 'y', 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Envios: ' + formatNum(context.parsed.x);
+                                }
+                            }
+                        }
+                    }
+                }
             });
         }
 
