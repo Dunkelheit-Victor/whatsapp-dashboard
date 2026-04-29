@@ -235,7 +235,7 @@
             utility: [90699, 194011, 333801, 511649, 556978, 351803, 697815, 689345, 958518, 28939]
         };
 
-        // BASE DE DADOS DINÂMICA DO TOP 5 (Sem as linhas em branco)
+        // BASE DE DADOS DINÂMICA DO TOP 5 (Sem Transacionais e Sem Linhas em Branco)
         const topCampanhasMensal = {
             "all": {
                 labels: ['Refin CP D3 (Fev/26)', 'Refin CP D1 (Fev/26)', 'Refin CP D7 (Fev/26)', 'Consig Trab D3 (Set/25)', 'Refin CP D5 (Fev/26)'],
@@ -261,25 +261,25 @@
                 labels: ['Churn Sem Oferta D2', 'Consig Refin PAP', 'CP Refin PAP', 'Info Desbloqueio V31', 'Desbloqueio Benefício V5'],
                 valores: [328784, 98950, 95818, 87798, 84426]
             },
-            "5": { // Dez/25
-                labels: ['Aumento Margem', 'Onboarding Abertura V11', 'Transacional IN100', 'SAD Reengajamento D3', 'SAD Reengajamento D2'],
-                valores: [155110, 79660, 42791, 41212, 40077]
+            "5": { // Dez/25 (Removido Transacional)
+                labels: ['Aumento Margem', 'Onboarding Abertura V11', 'SAD Reengajamento D3', 'SAD Reengajamento D2', 'CP Novo Recup. FDS'],
+                valores: [155110, 79660, 41212, 40077, 39761]
             },
-            "6": { // Jan/26
-                labels: ['Refin CP D5', 'CP Refin Carrinho', 'Onboarding Abertura V11', 'Transacional IN100', 'CP Novo D5'],
-                valores: [199455, 155712, 124210, 100073, 72832]
+            "6": { // Jan/26 (Removido Transacional)
+                labels: ['Refin CP D5', 'CP Refin Carrinho', 'Onboarding Abertura V11', 'CP Novo D5', 'SAD Reengajamento D3'],
+                valores: [199455, 155712, 124210, 72832, 68121]
             },
             "7": { // Fev/26
                 labels: ['Refin CP D3', 'Refin CP D1', 'Refin CP D7', 'Refin CP D5', 'CP Novo D7'],
                 valores: [1043367, 1009712, 990666, 738756, 217310]
             },
-            "8": { // Mar/26
-                labels: ['Refin CP Carrinho', 'NPS Transacional', 'Transacional IN100', 'CP Novo Carrinho', 'Onboarding Abertura V11'],
-                valores: [404930, 153502, 144596, 130393, 99064]
+            "8": { // Mar/26 (Removido NPS e Transacional)
+                labels: ['Refin CP Carrinho', 'CP Novo Carrinho', 'Onboarding Abertura V11', 'Pesquisa Randômico', 'Pesquisa Fluxo 2'],
+                valores: [404930, 130393, 99064, 71435, 56229]
             },
-            "9": { // Abr/26
-                labels: ['Refin CP Carrinho', 'NPS Transacional', 'CP Novo Carrinho', 'Transacional IN100', 'Onboarding Abertura V11'],
-                valores: [319102, 188810, 125121, 108029, 80581]
+            "9": { // Abr/26 (Removido NPS e Transacional)
+                labels: ['Refin CP Carrinho', 'CP Novo Carrinho', 'Onboarding Abertura V11', 'Portabilidade D1', 'Pesquisa Randômico'],
+                valores: [319102, 125121, 80581, 64485, 64024]
             }
         };
 
